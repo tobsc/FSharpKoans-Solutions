@@ -58,8 +58,27 @@ module ``about the stock example`` =
     // tests for yourself along the way. You can also try 
     // using the F# Interactive window to check your progress.
 
+    type StockInfo = 
+        {
+            Date: string
+            Open: string
+            Close: string
+        }
+
     [<Koan>]
     let YouGotTheAnswerCorrect() =
-        let result =  __
-        
+        let splitCommas (x:string) =
+            x.Split([|','|])
+
+        let invariantCultureParse (x: string) =
+            System.Double.Parse (x, System.Globalization.CultureInfo.InvariantCulture)
+
+        let getStockInfoFromLine (line: string): StockInfo =
+            (splitCommas line) |> (fun splitLine -> { Date = splitLine.[0]; Open = splitLine.[1]; Close = splitLine.[4]})
+
+        let calculateDiff (x:StockInfo) =
+            abs(invariantCultureParse x.Open - invariantCultureParse x.Close)
+
+        let result = (stockData |> List.tail |> List.map getStockInfoFromLine |> List.maxBy calculateDiff).Date
+       
         AssertEquality "2012-03-13" result
